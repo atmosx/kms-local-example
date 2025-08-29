@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Local artifacts
+secret.txt
+secret.enc.json
+secret.decrypted.txt
+
+# direnv
+.envrc
