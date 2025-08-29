@@ -126,7 +126,7 @@ aws --endpoint-url http://localhost:4566 kms list-keys
 
 ## Repository structure
 
-- `docker-compose.yml` — brings up LocalStack with KMS enabled.
+- `docker-compose.yaml` — brings up LocalStack with KMS enabled.
 - `kms_envelope.py` — Python sample using boto3 and cryptography for envelope encryption.
 - `requirements.txt` — Python dependencies.
 - `.gitignore` — ignores typical build artifacts and virtualenv.
