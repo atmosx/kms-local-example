@@ -19,6 +19,10 @@ You’ll generate a data key with KMS, encrypt a file locally with AES-256-GCM, 
 
    ```bash
    docker compose up -d
+   # configure endpoint
+   aws --endpoint-url http://localhost:4566 --region us-east-1 kms list-keys
+   # check if there are keys
+   aws --no-cli-pager --endpoint-url http://localhost:4566 --region us-east-1 kms list-keys
    ```
 
 2. Create and activate a virtual environment, then install dependencies:
@@ -47,6 +51,49 @@ You’ll generate a data key with KMS, encrypt a file locally with AES-256-GCM, 
    python kms_envelope.py decrypt -i secret.enc.json -o secret.decrypted.txt
    diff -u secret.txt secret.decrypted.txt || true
    ```
+
+## Working example
+
+```bash
+[atma:~/temp/kms-local]$ vim docker-compose.yaml
+[atma:~/temp/kms-local]$ docker compose up -d
+[+] Running 2/2
+ ✔ Network kms-local_default         Created                                                                                                           0.0s
+ ✔ Container kms-local-localstack-1  Started                                                                                                           0.2s
+
+[atma:~/temp/kms-local]$ aws --endpoint-url http://localhost:4566 --region us-east-1 kms list-keys
+[atma:~/temp/kms-local]$ aws --no-cli-pager --endpoint-url http://localhost:4566 --region us-east-1 kms list-keys
+{
+    "Keys": []
+}
+
+[atma:~/temp/kms-local]$ python kms_envelope.py init
+    Created CMK: 95447e8f-1a42-4a8a-8070-d472587b4e3c
+    Created alias: alias/local/envelope-key -> 95447e8f-1a42-4a8a-8070-d472587b4e3c
+
+[atma:~/temp/kms-local]$ echo "oauth1-token" > secret.txt
+
+# Encrypt using local KMS
+
+[atma:~/temp/kms-local]$ python kms_envelope.py encrypt -i ./secret.txt -o ./secret.enc.json
+Encrypted to ./secret.enc.json
+
+[atma:~/temp/kms-local]$ cat secret.enc.json
+{
+  "key_id": "95447e8f-1a42-4a8a-8070-d472587b4e3c",
+  "algorithm": "AES-256-GCM",
+  "encrypted_data_key_b64": "OTU0NDdlOGYtMWE0Mi00YThhLTgwNzAtZDQ3MjU4N2I0ZTNjOIvf+vBRqGDdAbQn5u46EeWH3LLhv3YQf0EIifEvkqpv/NyXlChoVicmnOYNNIHk+GH3+UmGXRFnUMVG3tX09vyr2syU+0bTHqj+Uxe2yrI=",
+  "nonce_b64": "QD7OaQPLFJ9PIfGJ",
+  "ciphertext_b64": "QLo8b0K6fbQuAfv7oFRyyZUBcFwr6TEWJnMYFQI="
+}
+
+# Decrypt using local KMS
+[atma:~/temp/kms-local]$ python kms_envelope.py decrypt -i ./secret.enc.json -o ./secret.decrypted.txt
+Decrypted to ./secret.decrypted.txt
+
+[atma:~/temp/kms-local]$ cat secret.decrypted.txt
+oauth1-token
+```
 
 ## How it works (envelope encryption)
 
