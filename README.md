@@ -1,15 +1,15 @@
 # Local KMS Envelope Encryption with LocalStack and Docker
 
 This repository demonstrates how to run a local AWS KMS-compatible endpoint using LocalStack and how to perform envelope encryption in Python.
-You’ll generate a data key with KMS, encrypt a file locally with AES-256-GCM, and store the encrypted data key alongside the ciphertext.[^1]
+You’ll generate a data key with KMS, encrypt a file locally with AES-256-GCM, and store the encrypted data key alongside the ciphertext.
 
-- LocalStack provides local KMS APIs so you can create and use symmetric keys for development and testing.[^1]
-- It runs easily via Docker Compose.[^2]
-- Services are exposed on the edge port 4566 by default.[^3]
+- LocalStack provides local KMS APIs so you can create and use symmetric keys for development and testing.
+- It runs easily via Docker Compose.
+- Services are exposed on the edge port 4566 by default.
 
 ## Prerequisites
 
-- Docker and Docker Compose installed and running.[^2]
+- Docker and Docker Compose installed and running.
 - Python 3.9+ and `pip`.
 - Optional: AWS CLI for quick verification.
 
@@ -100,13 +100,13 @@ oauth1-token
 - Request a data key from KMS.
 - Use the plaintext data key locally to encrypt your data (AES-256-GCM).
 - Store the encrypted data key (EDK) with your ciphertext.
-- To decrypt, call KMS to unwrap the EDK and use the recovered plaintext key to decrypt your data.[^4][^5]
+- To decrypt, call KMS to unwrap the EDK and use the recovered plaintext key to decrypt your data.
 
-This pattern keeps large data off KMS while protecting the data key with the KMS-managed key.[^4][^5]
+This pattern keeps large data off KMS while protecting the data key with the KMS-managed key.
 
 ## Configuration
 
-- LocalStack endpoint: `http://localhost:4566`[^3]
+- LocalStack endpoint: `http://localhost:4566`
 - Default region: `us-east-1`
 - Default credentials used by the sample: `AWS_ACCESS_KEY_ID=test`, `AWS_SECRET_ACCESS_KEY=test`
 
